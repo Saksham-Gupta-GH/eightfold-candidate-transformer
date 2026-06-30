@@ -10,6 +10,7 @@ class Projector:
         self.config = config
         self.fields = config.get("fields", [])
         self.include_confidence = config.get("include_confidence", True)
+        self.include_provenance = config.get("include_provenance", True)
         self.on_missing = config.get("on_missing", "null") # 'null', 'omit', 'error'
         
     def project(self, profile: CanonicalProfile) -> Dict[str, Any]:
@@ -60,6 +61,7 @@ class Projector:
                 
         if self.include_confidence:
             output["overall_confidence"] = profile_dict.get("overall_confidence")
+        if self.include_provenance:
             output["provenance"] = profile_dict.get("provenance")
             
         return output
