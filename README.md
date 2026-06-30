@@ -33,8 +33,13 @@ This project implements a robust candidate data transformer that merges multiple
    ```bash
    python3 main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json
    ```
+   
+5. **View the output as a Human-Readable Table (UI):**
+   ```bash
+   python3 main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json --format table
+   ```
 
-5. **Save to file (Optional):**
+6. **Save to file (Optional):**
    ```bash
    python3 main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json --out result.json
    ```
@@ -77,17 +82,19 @@ This project implements a robust candidate data transformer that merges multiple
 - The GitHub REST API does not expose employment history (experience or education).
 - Recruiter CSV data is considered highly authoritative for contact details and employment history.
 - The default phone region is dynamically determined, but defaults to `IN` (India) for numbers starting with 9, 8, 7, 6 that are 10 digits long, otherwise falls back to standard parsing.
-- Candidate identity mapping is heavily weighted on exact email matches.
+- Candidate identity mapping uses exact email matches as the primary key, with a fallback to fuzzy `full_name` resolution to enable cross-source merging for candidates missing public emails (e.g. Linus Torvalds).
+
+## Features
+- **Dynamic JSON Schema Validation:** The pipeline mathematically generates a strict JSON Schema dynamically at runtime based on the user-provided `custom_config.json`, and explicitly validates all projected outputs before emitting them.
+- **Derived Metrics:** The Merge Engine dynamically calculates `years_experience` by parsing and aggregating deduplicated `Experience` blocks.
+- **Cross-Source Identity Resolution:** Automatically merges candidate profiles across structured and unstructured data using email and name resolution.
 
 ## Limitations
-- Candidate matching is currently email-first; if a candidate lacks an email in one source, they might not merge optimally.
 - Resume (PDF) and LinkedIn extractors are not yet implemented for this iteration.
-- Output validation is structurally guaranteed by Pydantic internals, but explicit runtime JSON schema validation on the projected output could be added for strict contract enforcement.
 
 ## Future Extensions
 - **Resume PDF Parser**: Integrate a text extractor for unstructured resume data.
 - **LinkedIn Integration**: Scrape or use the LinkedIn API to populate the `Experience` and `Education` schemas.
-- **Fuzzy Identity Matching**: Use phonetic or string-distance algorithms to match candidates without email overlap.
 - **Multiple Email Clustering**: Group disjoint profiles using a graph of overlapping identifiers.
 
 ## Testing
