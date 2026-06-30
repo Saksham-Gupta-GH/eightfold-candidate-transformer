@@ -97,6 +97,11 @@ This project implements a robust candidate data transformer that merges multiple
 - **LinkedIn Integration**: Scrape or use the LinkedIn API to populate the `Experience` and `Education` schemas.
 - **Multiple Email Clustering**: Group disjoint profiles using a graph of overlapping identifiers.
 
+## Sample Outputs
+The generated JSON profiles for the provided sample inputs are committed in the repository for review:
+- **Default Full Canonical Schema:** [`outputs/default_output.json`](outputs/default_output.json)
+- **Custom Config Projected Schema:** [`outputs/custom_output.json`](outputs/custom_output.json)
+
 ## Testing
 A small test suite is included to verify core functionalities like normalization and merge logic.
 ```bash
