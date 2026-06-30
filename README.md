@@ -7,11 +7,20 @@ This project implements a robust candidate data transformer that merges multiple
 - Python 3.9+
 - Virtual environment recommended.
 
+### macOS / Linux
 ```bash
-# Set up a virtual environment and install dependencies
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+python3 main.py --csv sample.csv --github-url https://github.com/torvalds
+```
+
+### Windows (PowerShell)
+```powershell
+python -m venv venv
+venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python main.py --csv sample.csv --github-url https://github.com/torvalds
 ```
 
 ## Architecture
