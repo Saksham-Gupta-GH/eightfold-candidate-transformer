@@ -12,20 +12,31 @@ This project implements a robust candidate data transformer that merges multiple
 > [!TIP]
 > The commands below use `python3` and `pip3`. If you are on Windows (or depending on your environment), you may need to use `python` and `pip` instead.
 
-1. **Install dependencies:**
+1. **Set up Virtual Environment:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+   *(Note: For Windows PowerShell, run `python -m venv venv` and `venv\Scripts\Activate.ps1`)*
+
+2. **Install dependencies:**
    ```bash
    pip3 install -r requirements.txt
    ```
-   *(It is highly recommended to use a virtual environment, but a direct install works fine for quick testing).*
 
-2. **Run the default pipeline (outputs full schema):**
+3. **Run the default pipeline (outputs full schema):**
    ```bash
    python3 main.py --csv sample.csv --github-url https://github.com/torvalds
    ```
 
-3. **Run the projector pipeline (outputs flattened schema):**
+4. **Run the projector pipeline (outputs flattened schema):**
    ```bash
    python3 main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json
+   ```
+
+5. **Save to file (Optional):**
+   ```bash
+   python3 main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json --out result.json
    ```
 
 ## Architecture
@@ -54,27 +65,7 @@ This project implements a robust candidate data transformer that merges multiple
               [JSON Output]
 ```
 
-## How to Run
 
-You can run the engine via the command line interface `main.py`. Provide at least one source file (`--csv` or `--github-url`), and optionally a config file (`--config`) to reshape the output.
-
-### 1. Default Canonical Output
-To run the pipeline and see the raw canonical profile with default schema:
-```bash
-python3 main.py --csv sample.csv --github-url https://github.com/torvalds
-```
-
-### 2. Custom Output Projection
-To run the pipeline with a custom runtime config that reshapes fields, normalizes data, and filters based on rules:
-```bash
-python3 main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json
-```
-
-### 3. Save to file
-To save the output to a JSON file rather than printing to stdout:
-```bash
-python3 main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json --out result.json
-```
 
 ## Architecture Notes
 - **Extractors:** Found in `src/extractors.py`. Safely parses CSV and JSON into an unnormalized intermediate state. Handles missing columns and API rate limits gracefully.
