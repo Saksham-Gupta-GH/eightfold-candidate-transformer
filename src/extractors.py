@@ -23,30 +23,45 @@ class CSVExtractor(BaseExtractor):
             with open(file_path, 'r', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    name = row.get('name', '').strip()
-                    email = row.get('email', '').strip()
-                    phone = row.get('phone', '').strip()
-                    
-                    norm_phone = normalize_phone(phone)
-                    
-                    profile = CanonicalProfile(
-                        candidate_id=generate_id(),
-                        full_name=name if name else "",
-                        emails=[email] if email else [],
-                        phones=[norm_phone] if norm_phone else [],
-                        overall_confidence=0.8
-                    )
-                    
-                    if name:
-                        profile.provenance.append(Provenance(field="full_name", source="CSV", method="csv_parser"))
-                    if email:
-                        profile.provenance.append(Provenance(field="emails", source="CSV", method="csv_parser"))
-                    if norm_phone:
-                        profile.provenance.append(Provenance(field="phones", source="CSV", method="normalized"))
+                    try:
+                        name = row.get('name', '').strip()
+                        email = row.get('email', '').strip()
+                        phone = row.get('phone', '').strip()
+                        company = row.get('current_company', '').strip()
+                        title = row.get('title', '').strip()
                         
-                    profiles.append(profile)
+                        norm_phone = normalize_phone(phone, default_region="IN") if phone.startswith(('9','8','7','6')) and len(phone) == 10 else normalize_phone(phone)
+                        
+                        experiences = []
+                        if company or title:
+                            experiences.append(Experience(
+                                company=company if company else "Unknown",
+                                title=title if title else "Unknown",
+                            ))
+                            
+                        profile = CanonicalProfile(
+                            candidate_id=generate_id(),
+                            full_name=name if name else "",
+                            emails=[email] if email else [],
+                            phones=[norm_phone] if norm_phone else [],
+                            experience=experiences,
+                            overall_confidence=0.8
+                        )
+                        
+                        if name:
+                            profile.provenance.append(Provenance(field="full_name", source="CSV", method="csv_parser"))
+                        if email:
+                            profile.provenance.append(Provenance(field="emails", source="CSV", method="csv_parser"))
+                        if norm_phone:
+                            profile.provenance.append(Provenance(field="phones", source="CSV", method="normalized"))
+                        if experiences:
+                            profile.provenance.append(Provenance(field="experience", source="CSV", method="csv_parser"))
+                            
+                        profiles.append(profile)
+                    except Exception as e:
+                        print(f"Warning: Failed to parse row in CSV {file_path}. Error: {e}", file=sys.stderr)
         except Exception as e:
-            print(f"Warning: Failed to parse CSV {file_path}. Skipping. Error: {e}", file=sys.stderr)
+            print(f"Warning: Failed to open or read CSV {file_path}. Error: {e}", file=sys.stderr)
             
         return profiles
 

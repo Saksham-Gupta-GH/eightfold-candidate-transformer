@@ -39,24 +39,32 @@ class MergeEngine:
         if len(group) == 1:
             return group[0]
             
+        # Source reliability weights for fields (higher is better)
+        field_priority = {
+            "CSV": 0.9,     # High priority for contact info, work history
+            "GitHub": 0.7   # High priority for code skills, medium for contact
+        }
+            
         base = group[0].model_copy()
         
         # Merge arrays using set logic for primitives
         all_emails = set(base.emails)
         all_phones = set(base.phones)
         
-        # We need to compute combined confidence and handle conflict resolution
         total_conf = base.overall_confidence
         
         for other in group[1:]:
             all_emails.update(other.emails)
             all_phones.update(other.phones)
             
-            # For scalar fields like full_name or headline, we take the one from the source with higher confidence
-            if other.overall_confidence > base.overall_confidence:
-                if other.full_name: base.full_name = other.full_name
-                if other.headline: base.headline = other.headline
-                if other.location: base.location = other.location
+            # Simple field level resolution: we will take non-null fields
+            # or override if the other source is inherently more reliable for that field.
+            # E.g. we assume CSV is more reliable than GitHub for name/headline/location
+            csv_wins = (base.overall_confidence < other.overall_confidence) 
+            
+            if other.full_name and (not base.full_name or csv_wins): base.full_name = other.full_name
+            if other.headline and (not base.headline or csv_wins): base.headline = other.headline
+            if other.location and (not base.location or csv_wins): base.location = other.location
                 
             # Links
             if other.links:
@@ -73,7 +81,6 @@ class MergeEngine:
                     base.skills.append(s)
                     existing_skill_names.add(s.name)
                 else:
-                    # Boost confidence of existing skill if another source confirms it
                     for bs in base.skills:
                         if bs.name == s.name:
                             bs.confidence = min(1.0, bs.confidence + 0.1)
@@ -81,10 +88,13 @@ class MergeEngine:
                             bs.sources = list(set(bs.sources))
                             break
 
+            # Experience - append
+            base.experience.extend(other.experience)
+
             # Combine provenance
             base.provenance.extend(other.provenance)
             
-            # Boost overall confidence slightly because multiple sources matched this candidate
+            # Boost overall confidence slightly
             total_conf += (other.overall_confidence * 0.2)
             
         base.emails = list(all_emails)

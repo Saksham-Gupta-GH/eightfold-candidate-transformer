@@ -37,7 +37,19 @@ python3 main.py --csv sample.csv --github-url https://github.com/torvalds --conf
 ```
 
 ## Architecture Notes
-- **Extractors:** Found in `src/extractors.py`. Safely parses CSV and JSON into an unnormalized intermediate state.
-- **Normalizers:** Found in `src/normalize.py`. Uses `phonenumbers` for E.164 and `pycountry` for ISO-3166 alpha-2 mapping.
+- **Extractors:** Found in `src/extractors.py`. Safely parses CSV and JSON into an unnormalized intermediate state. Handles missing columns and API rate limits gracefully.
+- **Normalizers:** Found in `src/normalize.py`. Uses `phonenumbers` for E.164, `pycountry` for ISO-3166 alpha-2 mapping, and `dateutil` for `YYYY-MM` parsing.
 - **Merge Engine:** Found in `src/merge.py`. Identity matching based on email, conflict resolution based on source confidence weights.
 - **Projector:** Found in `src/projector.py`. Applies the JSON config at runtime using `jsonpath-ng` to reshape the final output.
+
+## Assumptions
+- The GitHub REST API does not expose employment history (experience or education).
+- Recruiter CSV data is considered highly authoritative for contact details and employment history.
+- The default phone region is dynamically determined, but defaults to `IN` (India) for numbers starting with 9, 8, 7, 6 that are 10 digits long, otherwise falls back to standard parsing.
+- Candidate identity mapping is heavily weighted on exact email matches.
+
+## Testing
+A small test suite is included to verify core functionalities like normalization and merge logic.
+```bash
+pytest tests/
+```
