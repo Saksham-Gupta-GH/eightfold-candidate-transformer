@@ -11,6 +11,7 @@ def main():
     parser.add_argument("--github-url", type=str, help="GitHub Profile URL (e.g. https://github.com/torvalds)")
     parser.add_argument("--config", type=str, help="Path to runtime configuration JSON")
     parser.add_argument("--out", type=str, help="Path to output JSON file (default stdout)")
+    parser.add_argument("--format", type=str, choices=["json", "table"], default="json", help="Output format in terminal (json or table)")
     
     args = parser.parse_args()
     
@@ -76,9 +77,41 @@ def main():
             else:
                 console.print("[green]✓[/green] Generated default canonical schema")
                 
-            console.print(f"\n[bold]Profiles Generated: {len(final_output)}[/bold]\n")
-            
-            console.print_json(data=final_output)
+            if args.format == "table":
+                from rich.table import Table
+                if final_output:
+                    table = Table(show_header=True, header_style="bold magenta")
+                    
+                    # Dynamically add columns based on keys of the first profile
+                    keys = list(final_output[0].keys())
+                    for key in keys:
+                        # Skip provenance in table view as it is too large
+                        if key != "provenance":
+                            table.add_column(key.replace("_", " ").title())
+                            
+                    for row in final_output:
+                        row_values = []
+                        for key in keys:
+                            if key != "provenance":
+                                val = row.get(key)
+                                if isinstance(val, list):
+                                    val = ", ".join(str(v) for v in val) if val else "None"
+                                elif isinstance(val, dict):
+                                    val = "{...}"
+                                elif val is None:
+                                    val = "None"
+                                else:
+                                    # Round floats for cleaner display
+                                    if isinstance(val, float):
+                                        val = f"{val:.2f}"
+                                row_values.append(str(val))
+                        table.add_row(*row_values)
+                    
+                    console.print(table)
+                else:
+                    console.print("[yellow]No profiles generated.[/yellow]")
+            else:
+                console.print_json(data=final_output)
         except ImportError:
             # Fallback if rich is not installed
             print(json.dumps(final_output, indent=2))
