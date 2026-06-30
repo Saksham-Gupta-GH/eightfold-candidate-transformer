@@ -1,33 +1,5 @@
 [
   {
-    "full_name": "Linus Torvalds",
-    "primary_email": null,
-    "phone": null,
-    "skills": [
-      "c++",
-      "c",
-      "openscad"
-    ],
-    "overall_confidence": 0.6,
-    "provenance": [
-      {
-        "field": "full_name",
-        "source": "GitHub",
-        "method": "github_api"
-      },
-      {
-        "field": "links",
-        "source": "GitHub",
-        "method": "github_api"
-      },
-      {
-        "field": "skills",
-        "source": "GitHub",
-        "method": "repo_language_extraction"
-      }
-    ]
-  },
-  {
     "full_name": "John Doe",
     "primary_email": "john@example.com",
     "phone": "+14155552671",
@@ -72,6 +44,49 @@
         "field": "emails",
         "source": "CSV",
         "method": "csv_parser"
+      }
+    ]
+  },
+  {
+    "full_name": "Linus Torvalds",
+    "primary_email": null,
+    "phone": "+16505551234",
+    "skills": [
+      "openscad",
+      "c++",
+      "c"
+    ],
+    "overall_confidence": 0.92,
+    "provenance": [
+      {
+        "field": "full_name",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "phones",
+        "source": "CSV",
+        "method": "normalized"
+      },
+      {
+        "field": "experience",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "full_name",
+        "source": "GitHub",
+        "method": "github_api"
+      },
+      {
+        "field": "links",
+        "source": "GitHub",
+        "method": "github_api"
+      },
+      {
+        "field": "skills",
+        "source": "GitHub",
+        "method": "repo_language_extraction"
       }
     ]
   }

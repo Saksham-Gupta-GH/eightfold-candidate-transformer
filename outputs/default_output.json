@@ -1,64 +1,6 @@
 [
   {
-    "candidate_id": "55eae1fb-e6f3-4432-bce7-e8ce71108856",
-    "full_name": "Linus Torvalds",
-    "emails": [],
-    "phones": [],
-    "location": null,
-    "links": {
-      "linkedin": null,
-      "github": "https://github.com/torvalds",
-      "portfolio": null,
-      "other": []
-    },
-    "headline": null,
-    "years_experience": null,
-    "skills": [
-      {
-        "name": "c",
-        "confidence": 0.9,
-        "sources": [
-          "GitHub API"
-        ]
-      },
-      {
-        "name": "c++",
-        "confidence": 0.9,
-        "sources": [
-          "GitHub API"
-        ]
-      },
-      {
-        "name": "openscad",
-        "confidence": 0.9,
-        "sources": [
-          "GitHub API"
-        ]
-      }
-    ],
-    "experience": [],
-    "education": [],
-    "provenance": [
-      {
-        "field": "full_name",
-        "source": "GitHub",
-        "method": "github_api"
-      },
-      {
-        "field": "links",
-        "source": "GitHub",
-        "method": "github_api"
-      },
-      {
-        "field": "skills",
-        "source": "GitHub",
-        "method": "repo_language_extraction"
-      }
-    ],
-    "overall_confidence": 0.6
-  },
-  {
-    "candidate_id": "69596be2-838b-4604-9049-8fcd991c3adf",
+    "candidate_id": "beafdfec-98fd-4cb1-a033-b3c2fc1a2cb6",
     "full_name": "John Doe",
     "emails": [
       "john@example.com"
@@ -69,7 +11,7 @@
     "location": null,
     "links": null,
     "headline": null,
-    "years_experience": null,
+    "years_experience": 6.4,
     "skills": [],
     "experience": [
       {
@@ -113,7 +55,7 @@
     "overall_confidence": 0.9600000000000001
   },
   {
-    "candidate_id": "325816c2-13ae-4e1c-ac94-99ab537f11f2",
+    "candidate_id": "46edb806-e226-4d77-b76d-f1a3dd3f266b",
     "full_name": "Jane Smith",
     "emails": [
       "jane@example.com"
@@ -139,5 +81,88 @@
       }
     ],
     "overall_confidence": 0.8
+  },
+  {
+    "candidate_id": "33be3233-d836-476e-9372-c8ae7ae4304d",
+    "full_name": "Linus Torvalds",
+    "emails": [],
+    "phones": [
+      "+16505551234"
+    ],
+    "location": null,
+    "links": {
+      "linkedin": null,
+      "github": "https://github.com/torvalds",
+      "portfolio": null,
+      "other": []
+    },
+    "headline": null,
+    "years_experience": 34.9,
+    "skills": [
+      {
+        "name": "c",
+        "confidence": 0.9,
+        "sources": [
+          "GitHub API"
+        ]
+      },
+      {
+        "name": "c++",
+        "confidence": 0.9,
+        "sources": [
+          "GitHub API"
+        ]
+      },
+      {
+        "name": "openscad",
+        "confidence": 0.9,
+        "sources": [
+          "GitHub API"
+        ]
+      }
+    ],
+    "experience": [
+      {
+        "company": "Linux Foundation",
+        "title": "Creator",
+        "start": "1991-08",
+        "end": null,
+        "summary": null
+      }
+    ],
+    "education": [],
+    "provenance": [
+      {
+        "field": "full_name",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "phones",
+        "source": "CSV",
+        "method": "normalized"
+      },
+      {
+        "field": "experience",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "full_name",
+        "source": "GitHub",
+        "method": "github_api"
+      },
+      {
+        "field": "links",
+        "source": "GitHub",
+        "method": "github_api"
+      },
+      {
+        "field": "skills",
+        "source": "GitHub",
+        "method": "repo_language_extraction"
+      }
+    ],
+    "overall_confidence": 0.92
   }
 ]
