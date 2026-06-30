@@ -95,7 +95,10 @@ def main():
                             if key != "provenance":
                                 val = row.get(key)
                                 if isinstance(val, list):
-                                    val = ", ".join(str(v) for v in val) if val else "None"
+                                    if val and isinstance(val[0], dict):
+                                        val = f"[{len(val)} items]"
+                                    else:
+                                        val = ", ".join(str(v) for v in val) if val else "None"
                                 elif isinstance(val, dict):
                                     val = "{...}"
                                 elif val is None:
