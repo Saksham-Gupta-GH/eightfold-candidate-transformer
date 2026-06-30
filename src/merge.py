@@ -107,6 +107,16 @@ class MergeEngine:
             # Experience - append
             base.experience.extend(other.experience)
 
+            # Deduplicate experience
+            seen_exp = set()
+            dedup_exp = []
+            for e in base.experience:
+                key = (e.company.lower().strip() if e.company else "", e.title.lower().strip() if e.title else "")
+                if key not in seen_exp:
+                    seen_exp.add(key)
+                    dedup_exp.append(e)
+            base.experience = dedup_exp
+            
             # Combine provenance
             base.provenance.extend(other.provenance)
             
@@ -126,5 +136,22 @@ class MergeEngine:
         base.emails = list(all_emails)
         base.phones = list(all_phones)
         base.overall_confidence = min(1.0, total_conf)
+        
+        # Calculate years_experience based on deduplicated experience
+        from datetime import datetime
+        total_months = 0
+        for e in base.experience:
+            try:
+                start = datetime.strptime(e.start, "%Y-%m") if getattr(e, 'start', None) else None
+                end = datetime.strptime(e.end, "%Y-%m") if getattr(e, 'end', None) else datetime.now()
+                if start:
+                    delta = end.year * 12 + end.month - (start.year * 12 + start.month)
+                    if delta > 0:
+                        total_months += delta
+            except Exception:
+                pass
+                
+        if total_months > 0:
+            base.years_experience = round(total_months / 12, 1)
         
         return base
