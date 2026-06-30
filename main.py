@@ -50,12 +50,18 @@ def main():
         final_output = [p.model_dump() for p in merged_profiles]
         
     # Output
-    out_json = json.dumps(final_output, indent=2)
     if args.out:
+        out_json = json.dumps(final_output, indent=2)
         with open(args.out, 'w') as f:
             f.write(out_json)
     else:
-        print(out_json)
+        try:
+            from rich.console import Console
+            console = Console()
+            console.print_json(data=final_output)
+        except ImportError:
+            # Fallback if rich is not installed
+            print(json.dumps(final_output, indent=2))
 
 if __name__ == "__main__":
     main()
