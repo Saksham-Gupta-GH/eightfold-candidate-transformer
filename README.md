@@ -65,7 +65,7 @@ python3 main.py --csv sample.csv --github-url https://github.com/torvalds --conf
 ## Architecture Notes
 - **Extractors:** Found in `src/extractors.py`. Safely parses CSV and JSON into an unnormalized intermediate state. Handles missing columns and API rate limits gracefully.
 - **Normalizers:** Found in `src/normalize.py`. Uses `phonenumbers` for E.164, `pycountry` for ISO-3166 alpha-2 mapping, and `dateutil` for `YYYY-MM` parsing.
-- **Merge Engine:** Found in `src/merge.py`. Identity matching based on email, conflict resolution based on source confidence weights.
+- **Merge Engine:** Conflict resolution based on source-priority weighting with confidence-aware merging.
 - **Projector:** Found in `src/projector.py`. Applies the JSON config at runtime using `jsonpath-ng` to reshape the final output.
 
 ## Assumptions

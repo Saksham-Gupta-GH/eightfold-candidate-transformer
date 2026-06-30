@@ -69,13 +69,13 @@ class MergeEngine:
             other_source = get_top_source(other)
             other_weight = field_priority.get(other_source, 0.5)
             
-            # Simple field level resolution: we will take non-null fields
-            # or override if the other source is inherently more reliable for that field.
-            csv_wins = (base_weight < other_weight) 
+            # Field-level conflict resolution:
+            # We override base fields if the other source has a higher priority weight.
+            other_wins_priority = (base_weight < other_weight) 
             
-            if other.full_name and (not base.full_name or csv_wins): base.full_name = other.full_name
-            if other.headline and (not base.headline or csv_wins): base.headline = other.headline
-            if other.location and (not base.location or csv_wins): base.location = other.location
+            if other.full_name and (not base.full_name or other_wins_priority): base.full_name = other.full_name
+            if other.headline and (not base.headline or other_wins_priority): base.headline = other.headline
+            if other.location and (not base.location or other_wins_priority): base.location = other.location
                 
             # Links
             if other.links:
