@@ -1,0 +1,8 @@
+phonenumbers
+pydantic
+jsonschema
+jsonpath-ng
+pycountry
+requests
+python-dateutil
+pytest

@@ -44,8 +44,17 @@ class MergeEngine:
             "CSV": 0.9,     # High priority for contact info, work history
             "GitHub": 0.7   # High priority for code skills, medium for contact
         }
+        
+        # Helper to get the top priority source for a profile
+        def get_top_source(profile: CanonicalProfile) -> str:
+            # Simple heuristic: what's the primary source listed in provenance?
+            if not profile.provenance:
+                return "GitHub" # default fallback
+            return profile.provenance[0].source
             
         base = group[0].model_copy()
+        base_source = get_top_source(base)
+        base_weight = field_priority.get(base_source, 0.5)
         
         # Merge arrays using set logic for primitives
         all_emails = set(base.emails)
@@ -57,10 +66,12 @@ class MergeEngine:
             all_emails.update(other.emails)
             all_phones.update(other.phones)
             
+            other_source = get_top_source(other)
+            other_weight = field_priority.get(other_source, 0.5)
+            
             # Simple field level resolution: we will take non-null fields
             # or override if the other source is inherently more reliable for that field.
-            # E.g. we assume CSV is more reliable than GitHub for name/headline/location
-            csv_wins = (base.overall_confidence < other.overall_confidence) 
+            csv_wins = (base_weight < other_weight) 
             
             if other.full_name and (not base.full_name or csv_wins): base.full_name = other.full_name
             if other.headline and (not base.headline or csv_wins): base.headline = other.headline

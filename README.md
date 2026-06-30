@@ -11,7 +11,33 @@ This project implements a robust candidate data transformer that merges multiple
 # Set up a virtual environment and install dependencies
 python3 -m venv venv
 source venv/bin/activate
-pip install phonenumbers pydantic jsonschema jsonpath-ng pycountry requests python-dateutil
+pip install -r requirements.txt
+```
+
+## Architecture
+
+```text
+    [CSV]               [GitHub Profile URL]
+      |                           |
+      v                           v
+  [CSV Extractor]         [GitHub Extractor]
+      |                           |
+      +------------+--------------+
+                   |
+                   v
+             [Normalizer] (Phones, Dates, Skills)
+                   |
+                   v
+            [Merge Engine] (Source Priority & Confidence)
+                   |
+                   v
+          [Canonical Profile]
+                   |
+                   v
+             [Projector] <--- (custom_config.json)
+                   |
+                   v
+              [JSON Output]
 ```
 
 ## How to Run
@@ -47,6 +73,11 @@ python3 main.py --csv sample.csv --github-url https://github.com/torvalds --conf
 - Recruiter CSV data is considered highly authoritative for contact details and employment history.
 - The default phone region is dynamically determined, but defaults to `IN` (India) for numbers starting with 9, 8, 7, 6 that are 10 digits long, otherwise falls back to standard parsing.
 - Candidate identity mapping is heavily weighted on exact email matches.
+
+## Limitations
+- Candidate matching is currently email-first; if a candidate lacks an email in one source, they might not merge optimally.
+- Resume (PDF) and LinkedIn extractors are not yet implemented for this iteration.
+- Output validation is structurally guaranteed by Pydantic internals, but explicit runtime JSON schema validation on the projected output could be added for strict contract enforcement.
 
 ## Testing
 A small test suite is included to verify core functionalities like normalization and merge logic.

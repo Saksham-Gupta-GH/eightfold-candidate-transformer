@@ -2,7 +2,7 @@ import csv
 import json
 import requests
 from typing import List, Dict, Any
-from .schema import CanonicalProfile, Provenance, Location, Links, Skill
+from .schema import CanonicalProfile, Provenance, Location, Links, Skill, Experience
 from .normalize import normalize_phone, normalize_country, canonicalize_skill
 import uuid
 import sys

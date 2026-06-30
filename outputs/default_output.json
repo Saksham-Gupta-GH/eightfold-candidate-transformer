@@ -1,0 +1,163 @@
+[
+  {
+    "candidate_id": "c6eae545-52a6-4494-8170-b1d5daf14146",
+    "full_name": "Linus Torvalds",
+    "emails": [],
+    "phones": [],
+    "location": null,
+    "links": {
+      "linkedin": null,
+      "github": "https://github.com/torvalds",
+      "portfolio": null,
+      "other": []
+    },
+    "headline": null,
+    "years_experience": null,
+    "skills": [
+      {
+        "name": "openscad",
+        "confidence": 0.9,
+        "sources": [
+          "GitHub API"
+        ]
+      },
+      {
+        "name": "c++",
+        "confidence": 0.9,
+        "sources": [
+          "GitHub API"
+        ]
+      },
+      {
+        "name": "c",
+        "confidence": 0.9,
+        "sources": [
+          "GitHub API"
+        ]
+      }
+    ],
+    "experience": [],
+    "education": [],
+    "provenance": [
+      {
+        "field": "full_name",
+        "source": "GitHub",
+        "method": "github_api"
+      },
+      {
+        "field": "links",
+        "source": "GitHub",
+        "method": "github_api"
+      },
+      {
+        "field": "skills",
+        "source": "GitHub",
+        "method": "repo_language_extraction"
+      }
+    ],
+    "overall_confidence": 0.6
+  },
+  {
+    "candidate_id": "fcc2596e-5c61-445d-a610-f4f945a1de8a",
+    "full_name": "John Doe",
+    "emails": [
+      "john@example.com"
+    ],
+    "phones": [
+      "+14155552671"
+    ],
+    "location": null,
+    "links": null,
+    "headline": null,
+    "years_experience": null,
+    "skills": [],
+    "experience": [
+      {
+        "company": "TechCorp",
+        "title": "Engineer",
+        "start": null,
+        "end": null,
+        "summary": null
+      },
+      {
+        "company": "TechCorp",
+        "title": "Senior Engineer",
+        "start": null,
+        "end": null,
+        "summary": null
+      }
+    ],
+    "education": [],
+    "provenance": [
+      {
+        "field": "full_name",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "emails",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "phones",
+        "source": "CSV",
+        "method": "normalized"
+      },
+      {
+        "field": "experience",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "full_name",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "emails",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "phones",
+        "source": "CSV",
+        "method": "normalized"
+      },
+      {
+        "field": "experience",
+        "source": "CSV",
+        "method": "csv_parser"
+      }
+    ],
+    "overall_confidence": 0.9600000000000001
+  },
+  {
+    "candidate_id": "31e63d4f-50f2-4975-b38d-422eea104c61",
+    "full_name": "Jane Smith",
+    "emails": [
+      "jane@example.com"
+    ],
+    "phones": [],
+    "location": null,
+    "links": null,
+    "headline": null,
+    "years_experience": null,
+    "skills": [],
+    "experience": [],
+    "education": [],
+    "provenance": [
+      {
+        "field": "full_name",
+        "source": "CSV",
+        "method": "csv_parser"
+      },
+      {
+        "field": "emails",
+        "source": "CSV",
+        "method": "csv_parser"
+      }
+    ],
+    "overall_confidence": 0.8
+  }
+]
