@@ -1,0 +1,20 @@
+[
+  {
+    "login": "johndoe",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "bio": "Software Engineer. Loves Python and React.",
+    "location": "United States",
+    "html_url": "https://github.com/johndoe",
+    "languages": ["Python", "JavaScript", "React.js"]
+  },
+  {
+    "login": "alice",
+    "name": "Alice Wonderland",
+    "email": "alice@example.com",
+    "bio": "Data Scientist",
+    "location": "UK",
+    "html_url": "https://github.com/alice",
+    "languages": ["Python", "R", "SQL"]
+  }
+]

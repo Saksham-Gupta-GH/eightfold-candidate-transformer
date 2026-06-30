@@ -1,0 +1,4 @@
+name,email,phone,current_company,title
+John Doe,john@example.com,4155552671,TechCorp,Engineer
+Jane Smith,jane@example.com,5551234567,,
+John Doe,john@example.com,415-555-2671,TechCorp,Senior Engineer
