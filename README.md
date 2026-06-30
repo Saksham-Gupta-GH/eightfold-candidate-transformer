@@ -7,21 +7,24 @@ This project implements a robust candidate data transformer that merges multiple
 - Python 3.9+
 - Virtual environment recommended.
 
-### macOS / Linux
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python3 main.py --csv sample.csv --github-url https://github.com/torvalds
-```
+## How to Run
 
-### Windows (PowerShell)
-```powershell
-python -m venv venv
-venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python main.py --csv sample.csv --github-url https://github.com/torvalds
-```
+1. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+   *(Note: It is highly recommended to use a virtual environment, but a direct pip install works perfectly fine if you want to test it quickly).*
+
+2. **Run the default pipeline (outputs full schema):**
+   ```bash
+   python main.py --csv sample.csv --github-url https://github.com/torvalds
+   ```
+   *(Note: Use `python3` instead of `python` if you are on macOS/Linux and your environment requires it).*
+
+3. **Run the projector pipeline (outputs flattened schema):**
+   ```bash
+   python main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json
+   ```
 
 ## Architecture
 
