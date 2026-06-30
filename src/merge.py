@@ -111,7 +111,11 @@ class MergeEngine:
             seen_exp = set()
             dedup_exp = []
             for e in base.experience:
-                key = (e.company.lower().strip() if e.company else "", e.title.lower().strip() if e.title else "")
+                key = (
+                    e.company.lower().strip() if e.company else "", 
+                    e.title.lower().strip() if e.title else "",
+                    e.start.strip() if e.start else ""
+                )
                 if key not in seen_exp:
                     seen_exp.add(key)
                     dedup_exp.append(e)
