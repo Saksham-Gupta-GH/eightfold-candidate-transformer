@@ -57,7 +57,27 @@ def main():
     else:
         try:
             from rich.console import Console
+            from rich.panel import Panel
+            
             console = Console()
+            
+            console.print(Panel("[bold cyan]Multi-Source Candidate Data Transformer[/bold cyan]", expand=False))
+            
+            if args.csv:
+                console.print("[green]✓[/green] Loaded Recruiter CSV")
+            if args.github_url:
+                console.print("[green]✓[/green] Fetched GitHub Profile")
+                
+            console.print("[green]✓[/green] Normalized candidate data")
+            console.print("[green]✓[/green] Merged records")
+            
+            if args.config:
+                console.print("[green]✓[/green] Applied custom projection")
+            else:
+                console.print("[green]✓[/green] Generated default canonical schema")
+                
+            console.print(f"\n[bold]Profiles Generated: {len(final_output)}[/bold]\n")
+            
             console.print_json(data=final_output)
         except ImportError:
             # Fallback if rich is not installed
