@@ -2,3 +2,4 @@ name,email,phone,current_company,title,start_date,end_date
 John Doe,john@example.com,4155552671,TechCorp,Engineer,01/2020,01/2022
 Jane Smith,jane@example.com,5551234567,,,,
 John Doe,john@example.com,415-555-2671,TechCorp,Senior Engineer,Feb 2022,
+Linus Torvalds,,650-555-1234,Linux Foundation,Creator,08/1991,

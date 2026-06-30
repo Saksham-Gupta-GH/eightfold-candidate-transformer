@@ -4,9 +4,9 @@
     "primary_email": null,
     "phone": null,
     "skills": [
-      "openscad",
+      "c",
       "c++",
-      "c"
+      "openscad"
     ],
     "overall_confidence": 0.6,
     "provenance": [

@@ -5,18 +5,23 @@ class MergeEngine:
     """Merges multiple CanonicalProfile records into unified profiles."""
     
     def merge(self, profiles: List[CanonicalProfile]) -> List[CanonicalProfile]:
-        # Group by email. Candidates without an email are considered unique for simplicity here.
+        # Group by email, fallback to lowercase name. 
         grouped: Dict[str, List[CanonicalProfile]] = {}
         unique_profiles = []
         
         for p in profiles:
-            if not p.emails:
+            key = None
+            if p.emails:
+                key = p.emails[0].lower()
+            elif p.full_name:
+                key = p.full_name.lower().strip()
+                
+            if not key:
                 unique_profiles.append(p)
             else:
-                for email in p.emails:
-                    if email not in grouped:
-                        grouped[email] = []
-                    grouped[email].append(p)
+                if key not in grouped:
+                    grouped[key] = []
+                grouped[key].append(p)
                     
         # Process groups
         processed = set()
