@@ -1,15 +1,17 @@
 import csv
 import json
+import requests
 from typing import List, Dict, Any
 from .schema import CanonicalProfile, Provenance, Location, Links, Skill
 from .normalize import normalize_phone, normalize_country, canonicalize_skill
 import uuid
+import sys
 
 def generate_id():
     return str(uuid.uuid4())
 
 class BaseExtractor:
-    def extract(self, file_path: str) -> List[CanonicalProfile]:
+    def extract(self, input_val: str) -> List[CanonicalProfile]:
         raise NotImplementedError
 
 class CSVExtractor(BaseExtractor):
@@ -17,86 +19,104 @@ class CSVExtractor(BaseExtractor):
     
     def extract(self, file_path: str) -> List[CanonicalProfile]:
         profiles = []
-        with open(file_path, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                # Basic fields
-                name = row.get('name', '').strip()
-                email = row.get('email', '').strip()
-                phone = row.get('phone', '').strip()
-                
-                # Normalization
-                norm_phone = normalize_phone(phone)
-                
-                profile = CanonicalProfile(
-                    candidate_id=generate_id(),
-                    full_name=name,
-                    emails=[email] if email else [],
-                    phones=[norm_phone] if norm_phone else [],
-                    overall_confidence=0.8  # Base confidence for Recruiter CSV
-                )
-                
-                # Provenance tracking
-                if email:
-                    profile.provenance.append(Provenance(field="emails", source="CSV", method="direct"))
-                if norm_phone:
-                    profile.provenance.append(Provenance(field="phones", source="CSV", method="normalized"))
-                if name:
-                    profile.provenance.append(Provenance(field="full_name", source="CSV", method="direct"))
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    name = row.get('name', '').strip()
+                    email = row.get('email', '').strip()
+                    phone = row.get('phone', '').strip()
                     
-                profiles.append(profile)
-                
+                    norm_phone = normalize_phone(phone)
+                    
+                    profile = CanonicalProfile(
+                        candidate_id=generate_id(),
+                        full_name=name if name else "",
+                        emails=[email] if email else [],
+                        phones=[norm_phone] if norm_phone else [],
+                        overall_confidence=0.8
+                    )
+                    
+                    if name:
+                        profile.provenance.append(Provenance(field="full_name", source="CSV", method="csv_parser"))
+                    if email:
+                        profile.provenance.append(Provenance(field="emails", source="CSV", method="csv_parser"))
+                    if norm_phone:
+                        profile.provenance.append(Provenance(field="phones", source="CSV", method="normalized"))
+                        
+                    profiles.append(profile)
+        except Exception as e:
+            print(f"Warning: Failed to parse CSV {file_path}. Skipping. Error: {e}", file=sys.stderr)
+            
         return profiles
 
 class GitHubExtractor(BaseExtractor):
-    """Extracts from a GitHub JSON dump representing API response."""
+    """Extracts unstructured data directly from a GitHub Profile URL."""
     
-    def extract(self, file_path: str) -> List[CanonicalProfile]:
+    def extract(self, url: str) -> List[CanonicalProfile]:
         profiles = []
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            
-            # Assume data is a list of profiles or a single profile
-            if isinstance(data, dict):
-                data = [data]
-                
-            for gh in data:
-                name = gh.get('name', gh.get('login', ''))
+        # Support both https://github.com/username and just username
+        username = url.rstrip('/').split('/')[-1]
+        
+        api_url = f"https://api.github.com/users/{username}"
+        try:
+            resp = requests.get(api_url, timeout=10)
+            if resp.status_code == 200:
+                gh = resp.json()
+                name = gh.get('name') or gh.get('login') or ""
                 email = gh.get('email', '')
                 bio = gh.get('bio', '')
                 location_str = gh.get('location', '')
-                url = gh.get('html_url', '')
-                gh_skills = gh.get('languages', []) # simplified representation
+                profile_url = gh.get('html_url', url)
                 
                 norm_loc = None
                 if location_str:
-                    country = normalize_country(location_str) # simplified, extracting country
+                    country = normalize_country(location_str)
                     if country:
                         norm_loc = Location(country=country)
                 
+                # Fetch repos to get languages as a proxy for skills
                 skills = []
-                for s in gh_skills:
-                    c_skill = canonicalize_skill(s)
-                    if c_skill:
-                        skills.append(Skill(name=c_skill, confidence=0.9, sources=["GitHub"]))
+                repo_resp = requests.get(f"{api_url}/repos", timeout=10)
+                if repo_resp.status_code == 200:
+                    languages = set()
+                    for r in repo_resp.json():
+                        lang = r.get('language')
+                        if lang: languages.add(lang)
                         
+                    for lang in languages:
+                        c_skill = canonicalize_skill(lang)
+                        if c_skill:
+                            skills.append(Skill(name=c_skill, confidence=0.9, sources=["GitHub API"]))
+                
                 profile = CanonicalProfile(
                     candidate_id=generate_id(),
                     full_name=name,
                     emails=[email] if email else [],
                     location=norm_loc,
-                    links=Links(github=url) if url else None,
+                    links=Links(github=profile_url) if profile_url else None,
                     headline=bio if bio else None,
                     skills=skills,
-                    overall_confidence=0.6  # Unstructured/Scraped has lower base confidence
+                    overall_confidence=0.6
                 )
                 
-                # Provenance
+                if name:
+                    profile.provenance.append(Provenance(field="full_name", source="GitHub", method="github_api"))
                 if email:
-                    profile.provenance.append(Provenance(field="emails", source="GitHub", method="direct"))
+                    profile.provenance.append(Provenance(field="emails", source="GitHub", method="github_api"))
+                if norm_loc:
+                    profile.provenance.append(Provenance(field="location", source="GitHub", method="github_api_normalized"))
+                if bio:
+                    profile.provenance.append(Provenance(field="headline", source="GitHub", method="github_api"))
+                if profile_url:
+                    profile.provenance.append(Provenance(field="links", source="GitHub", method="github_api"))
                 if skills:
-                    profile.provenance.append(Provenance(field="skills", source="GitHub", method="canonicalized"))
+                    profile.provenance.append(Provenance(field="skills", source="GitHub", method="repo_language_extraction"))
                     
                 profiles.append(profile)
-                
+            else:
+                print(f"Warning: GitHub API returned {resp.status_code} for {url}. Skipping.", file=sys.stderr)
+        except Exception as e:
+            print(f"Warning: Failed to fetch GitHub profile {url}. Skipping. Error: {e}", file=sys.stderr)
+            
         return profiles

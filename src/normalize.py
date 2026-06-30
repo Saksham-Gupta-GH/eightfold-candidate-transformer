@@ -45,7 +45,21 @@ def canonicalize_skill(skill_str: str) -> str:
         "node.js": "node",
         "nodejs": "node",
         "ts": "typescript",
-        "k8s": "kubernetes"
+        "k8s": "kubernetes",
+        "cpp": "c++"
     }
     
     return synonyms.get(s, s)
+
+from dateutil import parser as date_parser
+
+def normalize_date(date_str: str) -> Optional[str]:
+    """Normalize date to YYYY-MM format."""
+    if not date_str:
+        return None
+    try:
+        dt = date_parser.parse(date_str)
+        return dt.strftime("%Y-%m")
+    except (ValueError, TypeError):
+        return None
+

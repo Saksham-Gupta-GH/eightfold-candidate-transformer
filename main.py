@@ -8,14 +8,14 @@ from src.projector import Projector
 def main():
     parser = argparse.ArgumentParser(description="Multi-Source Candidate Data Transformer")
     parser.add_argument("--csv", type=str, help="Path to Recruiter CSV file")
-    parser.add_argument("--github", type=str, help="Path to GitHub JSON dump file")
+    parser.add_argument("--github-url", type=str, help="GitHub Profile URL (e.g. https://github.com/torvalds)")
     parser.add_argument("--config", type=str, help="Path to runtime configuration JSON")
     parser.add_argument("--out", type=str, help="Path to output JSON file (default stdout)")
     
     args = parser.parse_args()
     
-    if not args.csv and not args.github:
-        print("Error: Must provide at least one source (--csv or --github)")
+    if not args.csv and not args.github_url:
+        print("Error: Must provide at least one source (--csv or --github-url)")
         sys.exit(1)
         
     all_profiles = []
@@ -24,9 +24,9 @@ def main():
         extractor = CSVExtractor()
         all_profiles.extend(extractor.extract(args.csv))
         
-    if args.github:
+    if args.github_url:
         extractor = GitHubExtractor()
-        all_profiles.extend(extractor.extract(args.github))
+        all_profiles.extend(extractor.extract(args.github_url))
         
     # Merge
     merger = MergeEngine()
