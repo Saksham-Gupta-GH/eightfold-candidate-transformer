@@ -105,6 +105,16 @@ class MergeEngine:
             # Combine provenance
             base.provenance.extend(other.provenance)
             
+            # Deduplicate provenance
+            seen_prov = set()
+            dedup_prov = []
+            for prov in base.provenance:
+                key = (prov.field, prov.source, prov.method)
+                if key not in seen_prov:
+                    seen_prov.add(key)
+                    dedup_prov.append(prov)
+            base.provenance = dedup_prov
+            
             # Boost overall confidence slightly
             total_conf += (other.overall_confidence * 0.2)
             

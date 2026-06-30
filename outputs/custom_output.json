@@ -53,26 +53,6 @@
         "field": "experience",
         "source": "CSV",
         "method": "csv_parser"
-      },
-      {
-        "field": "full_name",
-        "source": "CSV",
-        "method": "csv_parser"
-      },
-      {
-        "field": "emails",
-        "source": "CSV",
-        "method": "csv_parser"
-      },
-      {
-        "field": "phones",
-        "source": "CSV",
-        "method": "normalized"
-      },
-      {
-        "field": "experience",
-        "source": "CSV",
-        "method": "csv_parser"
       }
     ]
   },

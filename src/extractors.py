@@ -3,7 +3,7 @@ import json
 import requests
 from typing import List, Dict, Any
 from .schema import CanonicalProfile, Provenance, Location, Links, Skill, Experience
-from .normalize import normalize_phone, normalize_country, canonicalize_skill
+from .normalize import normalize_phone, normalize_country, canonicalize_skill, normalize_date
 import uuid
 import sys
 
@@ -29,6 +29,8 @@ class CSVExtractor(BaseExtractor):
                         phone = row.get('phone', '').strip()
                         company = row.get('current_company', '').strip()
                         title = row.get('title', '').strip()
+                        start_date = row.get('start_date', '').strip()
+                        end_date = row.get('end_date', '').strip()
                         
                         norm_phone = normalize_phone(phone, default_region="IN") if phone.startswith(('9','8','7','6')) and len(phone) == 10 else normalize_phone(phone)
                         
@@ -37,6 +39,8 @@ class CSVExtractor(BaseExtractor):
                             experiences.append(Experience(
                                 company=company if company else "Unknown",
                                 title=title if title else "Unknown",
+                                start=normalize_date(start_date),
+                                end=normalize_date(end_date)
                             ))
                             
                         profile = CanonicalProfile(

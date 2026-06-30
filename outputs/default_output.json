@@ -1,6 +1,6 @@
 [
   {
-    "candidate_id": "c6eae545-52a6-4494-8170-b1d5daf14146",
+    "candidate_id": "55eae1fb-e6f3-4432-bce7-e8ce71108856",
     "full_name": "Linus Torvalds",
     "emails": [],
     "phones": [],
@@ -15,7 +15,7 @@
     "years_experience": null,
     "skills": [
       {
-        "name": "openscad",
+        "name": "c",
         "confidence": 0.9,
         "sources": [
           "GitHub API"
@@ -29,7 +29,7 @@
         ]
       },
       {
-        "name": "c",
+        "name": "openscad",
         "confidence": 0.9,
         "sources": [
           "GitHub API"
@@ -58,7 +58,7 @@
     "overall_confidence": 0.6
   },
   {
-    "candidate_id": "fcc2596e-5c61-445d-a610-f4f945a1de8a",
+    "candidate_id": "69596be2-838b-4604-9049-8fcd991c3adf",
     "full_name": "John Doe",
     "emails": [
       "john@example.com"
@@ -75,14 +75,14 @@
       {
         "company": "TechCorp",
         "title": "Engineer",
-        "start": null,
-        "end": null,
+        "start": "2020-01",
+        "end": "2022-01",
         "summary": null
       },
       {
         "company": "TechCorp",
         "title": "Senior Engineer",
-        "start": null,
+        "start": "2022-02",
         "end": null,
         "summary": null
       }
@@ -108,32 +108,12 @@
         "field": "experience",
         "source": "CSV",
         "method": "csv_parser"
-      },
-      {
-        "field": "full_name",
-        "source": "CSV",
-        "method": "csv_parser"
-      },
-      {
-        "field": "emails",
-        "source": "CSV",
-        "method": "csv_parser"
-      },
-      {
-        "field": "phones",
-        "source": "CSV",
-        "method": "normalized"
-      },
-      {
-        "field": "experience",
-        "source": "CSV",
-        "method": "csv_parser"
       }
     ],
     "overall_confidence": 0.9600000000000001
   },
   {
-    "candidate_id": "31e63d4f-50f2-4975-b38d-422eea104c61",
+    "candidate_id": "325816c2-13ae-4e1c-ac94-99ab537f11f2",
     "full_name": "Jane Smith",
     "emails": [
       "jane@example.com"
