@@ -9,21 +9,22 @@ This project implements a robust candidate data transformer that merges multiple
 
 ## How to Run
 
+> **Note:** The commands below use `python3` and `pip3`. If you are on Windows (or depending on your environment), you may need to use `python` and `pip` instead.
+
 1. **Install dependencies:**
    ```bash
-   pip install -r requirements.txt
+   pip3 install -r requirements.txt
    ```
-   *(Note: It is highly recommended to use a virtual environment, but a direct pip install works perfectly fine if you want to test it quickly).*
+   *(It is highly recommended to use a virtual environment, but a direct install works fine for quick testing).*
 
 2. **Run the default pipeline (outputs full schema):**
    ```bash
-   python main.py --csv sample.csv --github-url https://github.com/torvalds
+   python3 main.py --csv sample.csv --github-url https://github.com/torvalds
    ```
-   *(Note: Use `python3` instead of `python` if you are on macOS/Linux and your environment requires it).*
 
 3. **Run the projector pipeline (outputs flattened schema):**
    ```bash
-   python main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json
+   python3 main.py --csv sample.csv --github-url https://github.com/torvalds --config custom_config.json
    ```
 
 ## Architecture
