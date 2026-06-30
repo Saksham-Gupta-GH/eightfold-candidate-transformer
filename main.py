@@ -39,16 +39,50 @@ def main():
             config_data = json.load(f)
         projector = Projector(config_data)
         
+        import jsonschema
+        
+        # Build dynamic schema for Stage 6 Validation
+        dynamic_properties = {}
+        dynamic_required = []
+        for f_def in config_data.get("fields", []):
+            dest = f_def["path"]
+            dynamic_properties[dest] = {}
+            if f_def.get("required", False):
+                dynamic_required.append(dest)
+                
+        if config_data.get("include_confidence", True):
+            dynamic_properties["overall_confidence"] = {"type": "number"}
+        if config_data.get("include_provenance", True):
+            dynamic_properties["provenance"] = {"type": "array"}
+            
+        dynamic_schema = {
+            "type": "object",
+            "properties": dynamic_properties,
+            "required": dynamic_required
+        }
+        
         final_output = []
         for p in merged_profiles:
             try:
                 projected = projector.project(p)
+                # Stage 6: Validate projected output against dynamic schema
+                jsonschema.validate(instance=projected, schema=dynamic_schema)
                 final_output.append(projected)
             except ValueError as e:
                 print(f"Skipping profile {p.candidate_id}: {e}", file=sys.stderr)
+            except jsonschema.exceptions.ValidationError as e:
+                print(f"Validation failed for profile {p.candidate_id}: {e.message}", file=sys.stderr)
     else:
         # Default output
         final_output = [p.model_dump() for p in merged_profiles]
+        
+        # Stage 6 Validation: Ensure the final output strictly adheres to the JSON Schema
+        import jsonschema
+        from src.schema import CanonicalProfile
+        
+        schema = CanonicalProfile.model_json_schema()
+        for record in final_output:
+            jsonschema.validate(instance=record, schema=schema)
         
     # Output
     if args.out:
@@ -74,8 +108,10 @@ def main():
             
             if args.config:
                 console.print("[green]✓[/green] Applied custom projection")
+                console.print("[green]✓[/green] Validated output against dynamically generated JSON Schema")
             else:
                 console.print("[green]✓[/green] Generated default canonical schema")
+                console.print("[green]✓[/green] Validated output against strict JSON Schema")
                 
             if args.format == "table":
                 from rich.table import Table
