@@ -9,7 +9,8 @@ This project implements a robust candidate data transformer that merges multiple
 
 ## How to Run
 
-> **Note:** The commands below use `python3` and `pip3`. If you are on Windows (or depending on your environment), you may need to use `python` and `pip` instead.
+> [!TIP]
+> The commands below use `python3` and `pip3`. If you are on Windows (or depending on your environment), you may need to use `python` and `pip` instead.
 
 1. **Install dependencies:**
    ```bash
