@@ -79,6 +79,12 @@ python3 main.py --csv sample.csv --github-url https://github.com/torvalds --conf
 - Resume (PDF) and LinkedIn extractors are not yet implemented for this iteration.
 - Output validation is structurally guaranteed by Pydantic internals, but explicit runtime JSON schema validation on the projected output could be added for strict contract enforcement.
 
+## Future Extensions
+- **Resume PDF Parser**: Integrate a text extractor for unstructured resume data.
+- **LinkedIn Integration**: Scrape or use the LinkedIn API to populate the `Experience` and `Education` schemas.
+- **Fuzzy Identity Matching**: Use phonetic or string-distance algorithms to match candidates without email overlap.
+- **Multiple Email Clustering**: Group disjoint profiles using a graph of overlapping identifiers.
+
 ## Testing
 A small test suite is included to verify core functionalities like normalization and merge logic.
 ```bash
