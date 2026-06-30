@@ -89,71 +89,70 @@ def main():
         out_json = json.dumps(final_output, indent=2)
         with open(args.out, 'w') as f:
             f.write(out_json)
-    else:
-        try:
-            from rich.console import Console
-            from rich.panel import Panel
+    try:
+        from rich.console import Console
+        from rich.panel import Panel
+        
+        console = Console()
+        
+        console.print(Panel("[bold cyan]Multi-Source Candidate Data Transformer[/bold cyan]", expand=False))
+        
+        if args.csv:
+            console.print("[green]✓[/green] Loaded Recruiter CSV")
+        if args.github_url:
+            console.print("[green]✓[/green] Fetched GitHub Profile")
             
-            console = Console()
+        console.print("[green]✓[/green] Normalized candidate data")
+        console.print("[green]✓[/green] Merged records")
+        
+        if args.config:
+            console.print("[green]✓[/green] Applied custom projection")
+            console.print("[green]✓[/green] Validated output against dynamically generated JSON Schema")
+        else:
+            console.print("[green]✓[/green] Generated default canonical schema")
+            console.print("[green]✓[/green] Validated output against strict JSON Schema")
             
-            console.print(Panel("[bold cyan]Multi-Source Candidate Data Transformer[/bold cyan]", expand=False))
-            
-            if args.csv:
-                console.print("[green]✓[/green] Loaded Recruiter CSV")
-            if args.github_url:
-                console.print("[green]✓[/green] Fetched GitHub Profile")
+        if args.format == "table":
+            from rich.table import Table
+            if final_output:
+                table = Table(show_header=True, header_style="bold magenta")
                 
-            console.print("[green]✓[/green] Normalized candidate data")
-            console.print("[green]✓[/green] Merged records")
-            
-            if args.config:
-                console.print("[green]✓[/green] Applied custom projection")
-                console.print("[green]✓[/green] Validated output against dynamically generated JSON Schema")
-            else:
-                console.print("[green]✓[/green] Generated default canonical schema")
-                console.print("[green]✓[/green] Validated output against strict JSON Schema")
-                
-            if args.format == "table":
-                from rich.table import Table
-                if final_output:
-                    table = Table(show_header=True, header_style="bold magenta")
-                    
-                    # Dynamically add columns based on keys of the first profile
-                    keys = list(final_output[0].keys())
+                # Dynamically add columns based on keys of the first profile
+                keys = list(final_output[0].keys())
+                for key in keys:
+                    # Skip provenance in table view as it is too large
+                    if key != "provenance":
+                        table.add_column(key.replace("_", " ").title())
+                        
+                for row in final_output:
+                    row_values = []
                     for key in keys:
-                        # Skip provenance in table view as it is too large
                         if key != "provenance":
-                            table.add_column(key.replace("_", " ").title())
-                            
-                    for row in final_output:
-                        row_values = []
-                        for key in keys:
-                            if key != "provenance":
-                                val = row.get(key)
-                                if isinstance(val, list):
-                                    if val and isinstance(val[0], dict):
-                                        val = f"[{len(val)} items]"
-                                    else:
-                                        val = ", ".join(str(v) for v in val) if val else "None"
-                                elif isinstance(val, dict):
-                                    val = "{...}"
-                                elif val is None:
-                                    val = "None"
+                            val = row.get(key)
+                            if isinstance(val, list):
+                                if val and isinstance(val[0], dict):
+                                    val = f"[{len(val)} items]"
                                 else:
-                                    # Round floats for cleaner display
-                                    if isinstance(val, float):
-                                        val = f"{val:.2f}"
-                                row_values.append(str(val))
-                        table.add_row(*row_values)
-                    
-                    console.print(table)
-                else:
-                    console.print("[yellow]No profiles generated.[/yellow]")
+                                    val = ", ".join(str(v) for v in val) if val else "None"
+                            elif isinstance(val, dict):
+                                val = "{...}"
+                            elif val is None:
+                                val = "None"
+                            else:
+                                # Round floats for cleaner display
+                                if isinstance(val, float):
+                                    val = f"{val:.2f}"
+                            row_values.append(str(val))
+                    table.add_row(*row_values)
+                
+                console.print(table)
             else:
-                console.print_json(data=final_output)
-        except ImportError:
-            # Fallback if rich is not installed
-            print(json.dumps(final_output, indent=2))
+                console.print("[yellow]No profiles generated.[/yellow]")
+        else:
+            console.print_json(data=final_output)
+    except ImportError:
+        # Fallback if rich is not installed
+        print(json.dumps(final_output, indent=2))
 
 if __name__ == "__main__":
     main()
